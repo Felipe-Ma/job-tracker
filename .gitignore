@@ -1,2 +1,29 @@
-test
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.env
+
+# 🐍 Virtual Environment
 venv/
+env/
+
+# 🔧 VS Code / IDEs
+.vscode/
+.idea/
+
+# 🚀 FastAPI Uvicorn reload files
+*.reload
+
+# 📦 Docker
+*.tar
+*.pid
+
+# 🔑 Secrets
+.env
+.env.*
+
+# ⚙️ System files
+.DS_Store
+Thumbs.db
