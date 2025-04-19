@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Text, TIMESTAMP
+from sqlalchemy import Column, Integer, String, Date, Text, TIMESTAMP, func
 from sqlalchemy.ext.declarative import declarative_base
 
 # This is the base class that all models will extend
@@ -16,4 +16,4 @@ class JobApplication(Base):
     contact_info = Column(Text)
     notes = Column(Text)
     stage = Column(String(50), default="Applied")
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, server_default=func.now())
