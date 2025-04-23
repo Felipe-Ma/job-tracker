@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -38,3 +38,12 @@ def create_job(job: JobApplicationCreate, db: Session = Depends(get_db)):
         return new_job # Return the new job application
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    
+@app.get("/jobs/{job_id}", response_model=JobApplicationOut)
+def get_job(job_id: int, db: Session = Depends(get_db)):
+    job = db.query(JobApplication).filter(JobApplication.id == job_id).first()
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job
+    
+
