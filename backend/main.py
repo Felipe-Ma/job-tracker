@@ -59,5 +59,17 @@ def update_job(job_id: int, update_data: JobApplicationUpdate, db: Session = Dep
     db.commit()
     db.refresh(job)
     return job
+
+@app.delete("/jobs/{job_id}")
+def delete_job(job_id: int, db: Session = Depends(get_db)):
+    job = db.query(JobApplication).filter(JobApplication.id == job_id).first()
+
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    db.delete(job)
+    db.commit()
+    return {"message": f"Job with ID {job_id} has been deleted"}
+
     
 
