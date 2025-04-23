@@ -18,3 +18,13 @@ class JobApplicationOut(JobApplicationCreate):
 
     class Config:
         orm_mode = True 
+
+class JobApplicationUpdate(BaseModel):
+    company_name: Optional[str] = None
+    job_title: Optional[str] = None
+    location: Optional[str] = None
+    date_applied: Optional[datetime] = None
+    resume_used: Optional[str] = None
+    contact_info: Optional[str] = None
+    notes: Optional[str] = None
+    stage: Optional[str] = None

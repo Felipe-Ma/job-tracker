@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from database import SessionLocal
 from models import JobApplication
 
-from schemas import JobApplicationCreate, JobApplicationOut
+from schemas import JobApplicationCreate, JobApplicationOut, JobApplicationUpdate
 
 app = FastAPI()
 
@@ -44,6 +44,20 @@ def get_job(job_id: int, db: Session = Depends(get_db)):
     job = db.query(JobApplication).filter(JobApplication.id == job_id).first()
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
+    return job
+
+@app.put("/jobs/{job_id}", response_model=JobApplicationOut)
+def update_job(job_id: int, update_data: JobApplicationUpdate, db: Session = Depends(get_db)):
+    job = db.query(JobApplication).filter(JobApplication.id == job_id).first()
+
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    for field, value in update_data.dict(exclude_unset=True).items():
+        setattr(job, field, value)
+
+    db.commit()
+    db.refresh(job)
     return job
     
 
