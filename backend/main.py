@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from database import SessionLocal
 from models import JobApplication
@@ -8,6 +10,14 @@ from models import JobApplication
 from schemas import JobApplicationCreate, JobApplicationOut, JobApplicationUpdate
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 def get_db():
     db = SessionLocal()
