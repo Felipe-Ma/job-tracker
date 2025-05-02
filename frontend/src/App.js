@@ -7,6 +7,9 @@ function App() {
   const [jobs, setJobs] = useState([]); // Holds job list
   const [company, setCompany] = useState(""); // Holds company name
   const [title, setTitle] = useState(""); // Holds job title
+  const [editingJob, setEditingJob] = useState(null); // Holds job being edited
+  const [editCompany, setEditCompany] = useState(""); // Holds company name for editing
+  const [editTitle, setEditTitle] = useState(""); // Holds job title for editing
 
   function handleSubmit(e) {
     e.preventDefault(); // stops the page from refreshing
@@ -56,6 +59,12 @@ function App() {
       });
   }
 
+  function handleEdit(job) {
+    setEditingJob(job);
+    setEditCompany(job.company_name);
+    setEditTitle(job.job_title);
+  }
+
   useEffect(() => {
     fetch("http://localhost:8000/jobs")
       .then((res) => res.json())
@@ -75,22 +84,82 @@ function App() {
         <input
           type="text"
           placeholder="Company Name"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
         />
         <input
           type="text"
           placeholder="Job Title"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
         
         <button type="submit">Add Job</button>
       </form>
+      {editingJob && (
+        <form onSubmit={(e) => {
+          
+            e.preventDefault(); // stops the page from refreshing
+
+            const updatedJob = {
+              company_name: editCompany,
+              job_title: editTitle,
+            };
+
+            fetch(`http://localhost:8000/jobs/${editingJob.id}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(updatedJob),
+            })
+              .then((res) => res.json())
+              .then(() => {
+                // Refresh job list
+                return fetch("http://localhost:8000/jobs");
+              })
+              .then((res) => res.json())
+              .then((updatedJobs) => {
+                setJobs(updatedJobs);
+                setEditingJob(null); // exit edit mode
+                setEditCompany("");
+                setEditTitle("");
+              })
+              .catch((error) => {
+                console.error("Error updating job:", error);
+              });
+          }}
+        >
+          <h2>✏️ Editing Job ID {editingJob.id}</h2>
+          <input
+            type="text"
+            placeholder="Company Name"
+            value={editCompany}
+            onChange={(e) => setEditCompany(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Job Title"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+          />
+          <button type="submit">Update Job</button>
+          <button
+            type="button"
+            onClick={() => {
+              setEditingJob(null);
+              setEditCompany("");
+              setEditTitle("");
+            }}
+          >
+            Cancel
+          </button>
+        </form>
+      )}
 
       <p>Showing {jobs.length} job(s): </p>
       {jobs.map((job) => (
-        <JobCard key={job.id} job={job} onDelete={handleDelete} />
+        <JobCard key={job.id} job={job} onDelete={handleDelete} onEdit={() => handleEdit(job)} />
       ))}
 
     </div>
