@@ -1,4 +1,4 @@
-function JobCard({ job, onDelete }) {
+function JobCard({ job, onDelete, onEdit }) {
     return (
         <div style={{border: "1px solid #ccc", padding: "10px", margin: "10px 0" }}>
             <h3>{job.company_name}</h3>
@@ -7,6 +7,7 @@ function JobCard({ job, onDelete }) {
             <p><strong>Date Applied:</strong> {job.date_applied}</p>
 
             <button onClick={() => onDelete(job.id)}>🗑 Delete</button>
+            <button onClick={() => onEdit(job.id)}>✏️ Edit</button>
         </div>
     );
 }
