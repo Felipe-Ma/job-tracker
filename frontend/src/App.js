@@ -42,6 +42,20 @@ function App() {
       });
   }
 
+  function handleDelete(id) {
+    fetch(`http://localhost:8000/jobs/${id}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        // Remove the delete job from the UI
+        const updatedJobs = jobs.filter((job) => job.id !== id);
+        setJobs(updatedJobs);
+      })
+      .catch((error) => {
+        console.error("Error deleting job:", error);
+      });
+  }
+
   useEffect(() => {
     fetch("http://localhost:8000/jobs")
       .then((res) => res.json())
@@ -76,7 +90,7 @@ function App() {
 
       <p>Showing {jobs.length} job(s): </p>
       {jobs.map((job) => (
-        <JobCard key={job.id} job={job} />
+        <JobCard key={job.id} job={job} onDelete={handleDelete} />
       ))}
 
     </div>
