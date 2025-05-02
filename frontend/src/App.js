@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
+import JobCard from './JobCard';
 
 function App() {
   const [jobs, setJobs] = useState([]); // Holds job list
@@ -20,8 +21,12 @@ function App() {
   return (
     <div>
       <h1>🎯 Job Tracker</h1>
-      <p>Welcome! This will show your job applications soon.</p>
-      <p> Fetched {jobs.length} jobs (check console)</p>
+      <p>Showing {jobs.length} job(s): </p>
+
+      {jobs.map((job) => (
+        <JobCard key={job.id} job={job} />
+      ))}
+
     </div>
   );
 }
