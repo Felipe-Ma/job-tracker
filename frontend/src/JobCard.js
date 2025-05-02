@@ -1,6 +1,7 @@
 function JobCard({ job, onDelete, onEdit }) {
     return (
-        <div style={{border: "1px solid #ccc", padding: "10px", margin: "10px 0" }}>
+        <div className="job-card">
+            <h2>{job.job_title}</h2>
             <h3>{job.company_name}</h3>
             <p><strong>Role:</strong> {job.job_title}</p>
             <p><strong>Stage:</strong> {job.stage}</p>
