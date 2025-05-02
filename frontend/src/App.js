@@ -95,6 +95,7 @@ function App() {
         />
         
         <button type="submit">Add Job</button>
+        
       </form>
       {editingJob && (
         <form onSubmit={(e) => {
