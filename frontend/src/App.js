@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
 import JobCard from './JobCard';
+import JobForm from './JobForm';
 
 function App() {
   const [jobs, setJobs] = useState([]); // Holds job list
@@ -80,23 +81,15 @@ function App() {
   return (
     <div>
       <h1>🎯 Job Tracker</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Company Name"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Job Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        
-        <button type="submit">Add Job</button>
-        
-      </form>
+
+      <JobForm
+        company={company}
+        title={title}
+        setCompany={setCompany}
+        setTitle={setTitle}
+        handleSubmit={handleSubmit}
+      />
+
       {editingJob && (
         <form onSubmit={(e) => {
           
