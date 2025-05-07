@@ -4,12 +4,15 @@ from sqlalchemy.exc import SQLAlchemyError
 from fastapi.middleware.cors import CORSMiddleware
 
 
-from database import SessionLocal
-from models import JobApplication
+from database import SessionLocal, engine
+from models import JobApplication, Base
 
 from schemas import JobApplicationCreate, JobApplicationOut, JobApplicationUpdate
 
 app = FastAPI()
+
+# Create the database tables if they don't exist
+Base.metadata.create_all(bind=engine)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # React frontend

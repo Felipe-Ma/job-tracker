@@ -11,6 +11,7 @@ class JobApplicationCreate(BaseModel):
     contact_info: Optional[str] = None
     notes: Optional[str] = None
     stage: Optional[str] = "Applied"
+    salary: Optional[int] = None
 
 class JobApplicationOut(JobApplicationCreate):
     id: int
@@ -28,3 +29,4 @@ class JobApplicationUpdate(BaseModel):
     contact_info: Optional[str] = None
     notes: Optional[str] = None
     stage: Optional[str] = None
+    salary: Optional[int] = None
