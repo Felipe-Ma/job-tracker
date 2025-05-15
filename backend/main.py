@@ -2,6 +2,9 @@ from fastapi import FastAPI, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import UploadFile, File
+import os
+from pathlib import Path
 
 
 from database import SessionLocal, engine
@@ -10,6 +13,10 @@ from models import JobApplication, Base
 from schemas import JobApplicationCreate, JobApplicationOut, JobApplicationUpdate
 
 app = FastAPI()
+
+# Directory to store uploaded resumes
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # Create the database tables if they don't exist
 Base.metadata.create_all(bind=engine)
@@ -83,6 +90,33 @@ def delete_job(job_id: int, db: Session = Depends(get_db)):
     db.delete(job)
     db.commit()
     return {"message": f"Job with ID {job_id} has been deleted"}
+
+@app.post("/jobs/{job_id}/upload_resume")
+async def upload_resume(
+    job_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    # 1. Check if the job exists
+    job = db.query(JobApplication).filter(JobApplication.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # 2. Save the uploaded file
+    file_extension = file.filename.split(".")[-1]
+    safe_filename = f"{job_id}_resume.{file_extension}"
+    file_path = UPLOAD_DIR / safe_filename
+
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+
+    # 3. Update the resume_used field in the database
+    job.resume_used = safe_filename
+    db.commit()
+    db.refresh(job)
+
+    return {"message": "Resume uploaded successfully", "file_path": str(file_path)}
 
     
 
