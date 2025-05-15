@@ -10,6 +10,20 @@ function JobCard({ job, onDelete, onEdit }) {
             <p><strong>Location:</strong> {job.location}</p>
             <p><strong>Notes:</strong> {job.notes}</p>
 
+            {/* ✅ Resume Link */}
+            {job.resume_used && (
+              <p>
+                <strong>Resume:</strong>{" "}
+                <a
+                  href={`http://localhost:8000/uploads/${job.resume_used}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  📄 View Resume
+                </a>
+              </p>
+            )}
+
             <button onClick={() => onDelete(job.id)}>🗑 Delete</button>
             <button onClick={() => onEdit(job.id)}>✏️ Edit</button>
         </div>
