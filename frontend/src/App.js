@@ -10,19 +10,31 @@ function App() {
   const [jobs, setJobs] = useState([]); // Holds job list
   const [company, setCompany] = useState(""); // Holds company name
   const [title, setTitle] = useState(""); // Holds job title
+  const [location, setLocation] = useState(""); // Holds job location
+  const [dateApplied, setDateApplied] = useState(""); // Holds date applied
+  const [stage, setStage] = useState(""); // Holds job stage
+  const [contactInfo, setContactInfo] = useState(""); // Holds contact info
+  const [notes, setNotes] = useState(""); // Holds notes
+  const [salary, setSalary] = useState(""); // Holds salary
   const [editingJob, setEditingJob] = useState(null); // Holds job being edited
   const [editCompany, setEditCompany] = useState(""); // Holds company name for editing
   const [editTitle, setEditTitle] = useState(""); // Holds job title for editing
+  const [resumeFile, setResumeFile] = useState(null); // Holds resume file
 
   function handleSubmit(e) {
-    e.preventDefault(); // stops the page from refreshing
-
+    e.preventDefault();
+  
     const newJob = {
       company_name: company,
       job_title: title,
-      // add more fields here later
+      location: location,
+      date_applied: dateApplied,
+      stage: stage,
+      contact_info: contactInfo,
+      notes: notes,
+      salary: salary,
     };
-
+  
     fetch("http://localhost:8000/jobs", {
       method: "POST",
       headers: {
@@ -33,15 +45,43 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log("Job created:", data);
-
-        // Option 1: refetch the full list 
+  
+        if (resumeFile && data.id) {
+          const formData = new FormData();
+          formData.append("file", resumeFile);
+  
+          return fetch(`http://localhost:8000/jobs/${data.id}/upload_resume`, {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => {
+              if (!res.ok) throw new Error(`Resume upload failed: ${res.status}`);
+              return res.json();
+            })
+            .then(() => data) // Pass original job data to the next then
+            .catch((err) => {
+              console.error("Upload error:", err);
+              return data; // Still continue the flow
+            });
+        }
+  
+        return data; // No resume, continue with job data
+      })
+      .then(() => {
         return fetch("http://localhost:8000/jobs");
       })
       .then((res) => res.json())
       .then((updatedJobs) => {
         setJobs(updatedJobs);
-        setCompany(""); // Clear the input field
-        setTitle(""); // Clear the input field
+        setCompany("");
+        setTitle("");
+        setLocation("");
+        setDateApplied("");
+        setStage("");
+        setContactInfo("");
+        setNotes("");
+        setSalary("");
+        setResumeFile(null);
       })
       .catch((error) => {
         console.error("Error creating job:", error);
@@ -87,8 +127,22 @@ function App() {
       <JobForm
         company={company}
         title={title}
+        location={location}
+        dateApplied={dateApplied}
+        stage={stage}
+        contactInfo={contactInfo}
+        notes={notes}
+        salary={salary}
         setCompany={setCompany}
         setTitle={setTitle}
+        setLocation={setLocation}
+        setDateApplied={setDateApplied}
+        setStage={setStage}
+        setContactInfo={setContactInfo}
+        setNotes={setNotes}
+        setSalary={setSalary}
+        resumeFile={resumeFile}
+        setResumeFile={setResumeFile}
         handleSubmit={handleSubmit}
       />
 
