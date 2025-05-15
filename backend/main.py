@@ -91,6 +91,10 @@ def delete_job(job_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": f"Job with ID {job_id} has been deleted"}
 
+from fastapi.staticfiles import StaticFiles
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 @app.post("/jobs/{job_id}/upload_resume")
 async def upload_resume(
     job_id: int,
