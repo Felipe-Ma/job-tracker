@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import UploadFile, File
 import os
 from pathlib import Path
+from datetime import datetime
 
 
 from database import SessionLocal, engine
@@ -51,11 +52,14 @@ def get_jobs(db: Session = Depends(get_db)):
 @app.post("/jobs", response_model=JobApplicationOut)
 def create_job(job: JobApplicationCreate, db: Session = Depends(get_db)):
     try:
-        new_job = JobApplication(**job.dict()) # Create a new job application instance
-        db.add(new_job) # Add the new job application to the session
-        db.commit() # Commit the session to save the new job application
-        db.refresh(new_job) # Refresh the instance to get the new ID and other defaults
-        return new_job # Return the new job application
+        job_data = job.dict()
+        if job_data.get("date_applied") is None:
+            job_data["date_applied"] = datetime.utcnow().date()
+        new_job = JobApplication(**job_data)
+        db.add(new_job)
+        db.commit()
+        db.refresh(new_job)
+        return new_job
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     
