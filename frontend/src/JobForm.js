@@ -1,7 +1,7 @@
-function JobForm({ company, title, location, dateApplied, stage, 
+function JobForm({ company, title, location,
     contactInfo, notes, salary,
-    setCompany, setTitle, setLocation, setDateApplied, setStage, 
-    setContactInfo, setNotes, setSalary, 
+    setCompany, setTitle, setLocation,
+    setContactInfo, setNotes, setSalary,
     resumeFile, setResumeFile,
     handleSubmit }) {
     return (
@@ -23,18 +23,6 @@ function JobForm({ company, title, location, dateApplied, stage,
                 placeholder="Job Location"
                 value={location}
                 onChange={((e) => setLocation(e.target.value))}
-            />
-            <input
-                type="date"
-                placeholder="Date Applied"
-                value={dateApplied}
-                onChange={((e) => setDateApplied(e.target.value))}
-            />
-            <input
-                type="text"
-                placeholder="Stage"
-                value={stage}
-                onChange={((e) => setStage(e.target.value))}
             />
             <input
                 type="text"

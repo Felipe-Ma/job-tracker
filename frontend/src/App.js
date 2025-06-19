@@ -11,8 +11,6 @@ function App() {
   const [company, setCompany] = useState(""); // Holds company name
   const [title, setTitle] = useState(""); // Holds job title
   const [location, setLocation] = useState(""); // Holds job location
-  const [dateApplied, setDateApplied] = useState(""); // Holds date applied
-  const [stage, setStage] = useState(""); // Holds job stage
   const [contactInfo, setContactInfo] = useState(""); // Holds contact info
   const [notes, setNotes] = useState(""); // Holds notes
   const [salary, setSalary] = useState(""); // Holds salary
@@ -28,11 +26,9 @@ function App() {
       company_name: company,
       job_title: title,
       location: location,
-      date_applied: dateApplied,
-      stage: stage,
-      contact_info: contactInfo,
-      notes: notes,
-      salary: salary,
+      contact_info: contactInfo || null,
+      notes: notes || null,
+      salary: salary ? parseInt(salary, 10) : null,
     };
   
     fetch("http://localhost:8000/jobs", {
@@ -76,8 +72,6 @@ function App() {
         setCompany("");
         setTitle("");
         setLocation("");
-        setDateApplied("");
-        setStage("");
         setContactInfo("");
         setNotes("");
         setSalary("");
@@ -128,16 +122,12 @@ function App() {
         company={company}
         title={title}
         location={location}
-        dateApplied={dateApplied}
-        stage={stage}
         contactInfo={contactInfo}
         notes={notes}
         salary={salary}
         setCompany={setCompany}
         setTitle={setTitle}
         setLocation={setLocation}
-        setDateApplied={setDateApplied}
-        setStage={setStage}
         setContactInfo={setContactInfo}
         setNotes={setNotes}
         setSalary={setSalary}
